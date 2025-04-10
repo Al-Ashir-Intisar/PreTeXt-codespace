@@ -5,6 +5,12 @@ This repository is designed to help you quickly get started with [PreTeXt](https
 ---
 
 ## 🚀 Quick Start Guide
+Once the Codespace has finished creating, **check that PreTeXt is installed** by running:
+
+```bash
+pretext --version
+```
+If you see an error like **command not found**, follow these steps:
 
 1. **Reload the VS Code Window**
    - Press `Ctrl+Shift+P` → type `Reload Window` → hit Enter.
