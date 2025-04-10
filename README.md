@@ -6,3 +6,8 @@ reload window
 kill terminal 
 new terminal
 then build 
+
+
+set the Github pags build and deployment source to github actions as shown below
+![alt text](image.png)
+
