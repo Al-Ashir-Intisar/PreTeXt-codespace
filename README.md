@@ -38,7 +38,7 @@ If you see an error like **command not found**, follow these steps:
      ```bash
      pretext deploy --pages
      ```
-   - If you encounter that github pages is not being deplouyed follow the instruction below:
+   - If you encounter that github pages is not being deployed follow the instruction below:
 
 ---
 
