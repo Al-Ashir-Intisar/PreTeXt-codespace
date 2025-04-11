@@ -141,9 +141,170 @@ This chapter is co-authored by Francesca Gandini, Sumner Strom, Al Ashir Intisar
         For more information on using Macaulay2, visit the <url href="https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/___The_sp__Macaulay2_splanguage.html">official documentation</url>.
       </p>
     </section>         
-<section xml:id="sec-m2-commands">
-        <title>Basic M2 commands </title>
-    </section>
+    <section xml:id="sec-m2-commands">
+      <title>Basic M2 Commands</title>
+    
+      <section>
+        <title>Arithmetic, Strings, and Lists</title>
+        <p>
+          Make sure you run the code cells sequentially since some functions defined in earlier cells are used in later cells.
+        </p>
+        <p>This block introduces basic arithmetic operations in Macaulay2, including exponentiation.</p>
+        <sage language="macaulay2">
+          <input>
+            restart
+            2+2
+            3/5 + 7/11
+            1*2*3*4
+            2^200
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>Here we compute large factorials, demonstrate how multiple expressions are separated by semicolons, and how to access the previous output using `oo`.</p>
+        <sage language="macaulay2">
+          <input>
+            40!
+            100!
+            1;2;3*4
+            4*5;
+            oo
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>Strings are created using double quotes, assigned to variables, and concatenated horizontally with `|` or vertically with `||`.</p>
+        <sage language="macaulay2">
+          <input>
+            "hi there"
+            s = "hi there"
+            s | " - " | s
+            s || "-- -----" || s
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>Lists are constructed with curly braces. Indexing starts at 0, and element-wise arithmetic works like vector math.</p>
+        <sage language="macaulay2">
+          <input>
+            s = "hi there"
+            L = {1, 2, s}
+            L_0
+            L_1
+            10*{1,2,3} + {1,1,1}
+          </input>
+          <output>...</output>
+        </sage>
+      </section>
+    
+      <section>
+        <title>Functions, Apply, and Loops</title>
+    
+        <p>Functions are created using the arrow operator `->`. This block defines a cube function `f` and a two-variable multiplication function `g`.</p>
+        <sage language="macaulay2">
+          <input>
+            f = i -> i^3
+            f 5
+            g = (x,y) -> x * y
+            g(6,9)
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>The `apply` function maps a function over a list or range. We also demonstrate a `for` loop to print values and their cubes.</p>
+        <sage language="macaulay2">
+          <input>
+            apply({1,2,3,4}, i -> i^2)
+            apply({1,2,3,4}, f)
+            apply(1 .. 4, f)
+            apply(5, f)
+            for i from 1 to 5 do print(i, i^3)
+          </input>
+          <output>...</output>
+        </sage>
+      </section>
+    
+      <section>
+        <title>Rings, Matrices, Ideals</title>
+    
+        <p>This block defines a quotient ring and a free module over it. It also explores indexing of basis vectors and ring metadata using `describe`.</p>
+        <sage language="macaulay2">
+          <input>
+            R = ZZ/5[x,y,z];
+            (x + y)^5
+            R
+            describe R
+            F = R^3
+            F_1
+            F_{1,2}
+            F_{2,1,1}
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>We define a homomorphism using a matrix and investigate its image, ideal, kernel, and related algebraic information like rank and Poincaré polynomial.</p>
+        <sage language="macaulay2">
+          <input>
+            f = matrix {{x, y, z}}
+            image f
+            ideal (x, y, z)
+            kernel f
+            generators oo
+            poincare kernel f
+            rank kernel f
+            presentation kernel f
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>This segment combines kernel and cokernel into a subquotient module, and explores its generators, relations, and a simplified (pruned) form.</p>
+        <sage language="macaulay2">
+          <input>
+            cokernel f
+            N = kernel f ++ cokernel f
+            generators N
+            relations N
+            prune N
+          </input>
+          <output>...</output>
+        </sage>
+      </section>
+    
+      <section>
+        <title>Homological Algebra and Gröbner Bases</title>
+    
+        <p>We compute a projective resolution of a module, verify that it is a complex, and examine its Betti table for structure.</p>
+        <sage language="macaulay2">
+          <input>
+            C = resolution cokernel f
+            C.dd
+            C.dd^2 == 0
+            betti C
+          </input>
+          <output>...</output>
+        </sage>
+    
+        <p>We construct a generic matrix, compute its resolution, and build polynomial rings with indexed variables. We generate and analyze a Gröbner basis.</p>
+        <sage language="macaulay2">
+          <input>
+            R = ZZ/101[a .. r];
+            g = genericMatrix(R, a, 3, 6)
+            M = cokernel g
+            time C = resolution M
+            betti C
+            S = ZZ/101[t_1 .. t_9, u_1 .. u_9];
+            m = genericMatrix(S, t_1, 3, 3)
+            n = genericMatrix(S, u_1, 3, 3)
+            m * n
+            j = ideal(m*n - n*m)
+            gbj = groebnerBasis j;
+            betti gbj
+          </input>
+          <output>...</output>
+        </sage>
+      </section>
+    
+    </section>    
 <section xml:id="sec-invariantrings-package">
         <title>InvariantRings package </title>
     </section>
