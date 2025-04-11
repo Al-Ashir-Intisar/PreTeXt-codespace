@@ -41,7 +41,24 @@ window.MathJax = {
   },
   "options": {
     "ignoreHtmlClass": "tex2jax_ignore|ignore-math",
-    "processHtmlClass": "process-math"
+    "processHtmlClass": "process-math",
+    "renderActions": {
+      "findScript": [
+        10,
+        function (doc) {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(function(node) {
+                var display = !!node.type.match(/; *mode=display/);
+                var math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                var text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = {node: text, delim: '', n: 0};
+                math.end = {node: text, delim: '', n: 0};
+                doc.math.push(math);
+            });
+        },
+        ""
+      ]
+    }
   },
   "chtml": {
     "scale": 0.98,
@@ -106,7 +123,19 @@ eBookConfig.enable_chatcodes =  false;
 <!--*** Runestone Services ***-->
 <script src="_static/prefix-runtime.a0c870bab402ccbf.bundle.js"></script><script src="_static/prefix-723.3e6434f80549315a.bundle.js"></script><script src="_static/prefix-runestone.f6bda0c0ccce4835.bundle.js"></script><link rel="stylesheet" type="text/css" href="_static/prefix-723.3bccd435914aa0ff.css">
 <link rel="stylesheet" type="text/css" href="_static/prefix-runestone.97de40e034b535c5.css">
-<script xmlns:xlink="http://www.w3.org/1999/xlink" src="_static/pretext/js/lti_iframe_resizer.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/components/prism-core.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/line-numbers/prism-line-numbers.min.js" integrity="sha512-dubtf8xMHSQlExGRQ5R7toxHLgSDZ0K7AunqPWHXmJQ8XyVIG19S1T95gBxlAeGOK02P4Da2RTnQz0Za0H0ebQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/line-highlight/prism-line-highlight.min.js" integrity="sha512-93uCmm0q+qO5Lb1huDqr7tywS8A2TFA+1/WHvyiWaK6/pvsFl6USnILagntBx8JnVbQH5s3n0vQZY6xNthNfKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js" integrity="sha512-4xUl/d6D6THrAnXAwGajXkoWaeMNwEKK4iNfq5DotEbLPAfk6FSxSP3ydNxqDgCw1c/0Z1Jg6L8h2j+++9BZmg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="lunr-pretext-search-index.js" async=""></script><script src="_static/pretext/js/pretext_search.js"></script><script src="_static/pretext/js/lib/knowl.js"></script><!--knowl.js code controls Sage Cells within knowls--><script>sagecellEvalName='Evaluate (Sage)';
+<script src="https://sagecell.sagemath.org/static/embedded_sagecell.js"></script><script xmlns:xlink="http://www.w3.org/1999/xlink" src="_static/pretext/js/lti_iframe_resizer.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/components/prism-core.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/line-numbers/prism-line-numbers.min.js" integrity="sha512-dubtf8xMHSQlExGRQ5R7toxHLgSDZ0K7AunqPWHXmJQ8XyVIG19S1T95gBxlAeGOK02P4Da2RTnQz0Za0H0ebQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/line-highlight/prism-line-highlight.min.js" integrity="sha512-93uCmm0q+qO5Lb1huDqr7tywS8A2TFA+1/WHvyiWaK6/pvsFl6USnILagntBx8JnVbQH5s3n0vQZY6xNthNfKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js" integrity="sha512-4xUl/d6D6THrAnXAwGajXkoWaeMNwEKK4iNfq5DotEbLPAfk6FSxSP3ydNxqDgCw1c/0Z1Jg6L8h2j+++9BZmg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><script src="lunr-pretext-search-index.js" async=""></script><script src="_static/pretext/js/pretext_search.js"></script><script src="_static/pretext/js/lib/knowl.js"></script><!--knowl.js code controls Sage Cells within knowls--><script>sagecellEvalName='Evaluate (Sage)';
+</script><script>// Make *any* div with class 'sagecell-macaulay2' an executable Sage cell
+// Their results will be linked, only within language type
+sagecell.makeSagecell({
+  "inputLocation": "div.sagecell-macaulay2",
+  "linked": true,
+  "linkKey": "linked-macaulay2",
+  "autoeval": false,
+  "languages": [
+    "macaulay2"
+  ],
+  "evalButtonText": "Evaluate (Macaulay2)"
+});
 </script>
 </head>
 <body class="pretext book ignore-math">
@@ -260,7 +289,15 @@ eBookConfig.enable_chatcodes =  false;
 </ul>
 </li>
 <li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-codespace" class="internal"><span class="codenumber">11.2</span> <span class="title">Creating a M2 Codespace</span></a></div></li>
-<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands" class="internal"><span class="codenumber">11.3</span> <span class="title">Basic M2 commands</span></a></div></li>
+<li class="toc-item toc-section">
+<div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands" class="internal"><span class="codenumber">11.3</span> <span class="title">Basic M2 Commands</span></a></div>
+<ul class="structural toc-item-list">
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands-2" class="internal"><span class="codenumber">11.3.1</span> <span class="title">Arithmetic, Strings, and Lists</span></a></div></li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands-3" class="internal"><span class="codenumber">11.3.2</span> <span class="title">Functions, Apply, and Loops</span></a></div></li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands-4" class="internal"><span class="codenumber">11.3.3</span> <span class="title">Rings, Matrices, Ideals</span></a></div></li>
+<li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-m2-commands-5" class="internal"><span class="codenumber">11.3.4</span> <span class="title">Homological Algebra and Gröbner Bases</span></a></div></li>
+</ul>
+</li>
 <li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-invariantrings-package" class="internal"><span class="codenumber">11.4</span> <span class="title">InvariantRings package</span></a></div></li>
 <li class="toc-item toc-section"><div class="toc-title-box"><a href="ch-M2.html#sec-theory-invariant-rings" class="internal"><span class="codenumber">11.5</span> <span class="title">Theory for invariant rings</span></a></div></li>
 </ul>
@@ -327,8 +364,105 @@ eBookConfig.enable_chatcodes =  false;
 <div class="para" id="sec-m2-codespace-19">✅ Following all these steps ensures that Macaulay2 is ready to use inside your Codespace and only the correct environment settings are applied.</div>
 <div class="para" id="sec-m2-codespace-20">Alternative: If you want to create your own repository with Macaulay2 support from scratch, copy the .devcontainer/ directory and optionally the M2codes/, image_files/, and README.md from the original repo. Push to GitHub and launch your own Codespace.</div>
 <div class="para" id="sec-m2-codespace-21">For more information on using Macaulay2, visit the <a class="external" href="https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/___The_sp__Macaulay2_splanguage.html" target="_blank">official documentation</a><details class="ptx-footnote" aria-live="polite" id="sec-m2-codespace-21-2"><summary class="ptx-footnote__number" title="Footnote 11.2.3"><sup> 3 </sup></summary><div class="ptx-footnote__contents" id="sec-m2-codespace-21-2"><code class="code-inline tex2jax_ignore">macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/___The_sp__Macaulay2_splanguage.html</code></div></details>.</div></section><section class="section" id="sec-m2-commands"><h3 class="heading hide-type">
-<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3</span><span class="space"> </span><span class="title">Basic M2 commands</span>
-</h3></section><section class="section" id="sec-invariantrings-package"><h3 class="heading hide-type">
+<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3</span><span class="space"> </span><span class="title">Basic M2 Commands</span>
+</h3>
+<section class="section" id="sec-m2-commands-2"><h4 class="heading hide-type">
+<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3.1</span><span class="space"> </span><span class="title">Arithmetic, Strings, and Lists</span>
+</h4>
+<div class="para" id="sec-m2-commands-2-2">Make sure you run the code cells sequentially since some functions defined in earlier cells are used in later cells.</div>
+<div class="para" id="sec-m2-commands-2-3">This block introduces basic arithmetic operations in Macaulay2, including exponentiation.</div>
+<div id="sec-m2-commands-2-4" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">restart
+2+2
+3/5 + 7/11
+1*2*3*4
+2^200
+</script></div>
+<div class="para" id="sec-m2-commands-2-5">Here we compute large factorials, demonstrate how multiple expressions are separated by semicolons, and how to access the previous output using `oo`.</div>
+<div id="sec-m2-commands-2-6" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">40!
+100!
+1;2;3*4
+4*5;
+oo
+</script></div>
+<div class="para" id="sec-m2-commands-2-7">Strings are created using double quotes, assigned to variables, and concatenated horizontally with `|` or vertically with `||`.</div>
+<div id="sec-m2-commands-2-8" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">"hi there"
+s = "hi there"
+s | " - " | s
+s || "-- -----" || s
+</script></div>
+<div class="para" id="sec-m2-commands-2-9">Lists are constructed with curly braces. Indexing starts at 0, and element-wise arithmetic works like vector math.</div>
+<div id="sec-m2-commands-2-10" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">s = "hi there"
+L = {1, 2, s}
+L_0
+L_1
+10*{1,2,3} + {1,1,1}
+</script></div></section><section class="section" id="sec-m2-commands-3"><h4 class="heading hide-type">
+<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3.2</span><span class="space"> </span><span class="title">Functions, Apply, and Loops</span>
+</h4>
+<div class="para" id="sec-m2-commands-3-2">Functions are created using the arrow operator `-&gt;`. This block defines a cube function `f` and a two-variable multiplication function `g`.</div>
+<div id="sec-m2-commands-3-3" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">f = i -> i^3
+f 5
+g = (x,y) -> x * y
+g(6,9)
+</script></div>
+<div class="para" id="sec-m2-commands-3-4">The `apply` function maps a function over a list or range. We also demonstrate a `for` loop to print values and their cubes.</div>
+<div id="sec-m2-commands-3-5" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">apply({1,2,3,4}, i -> i^2)
+apply({1,2,3,4}, f)
+apply(1 .. 4, f)
+apply(5, f)
+for i from 1 to 5 do print(i, i^3)
+</script></div></section><section class="section" id="sec-m2-commands-4"><h4 class="heading hide-type">
+<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3.3</span><span class="space"> </span><span class="title">Rings, Matrices, Ideals</span>
+</h4>
+<div class="para" id="sec-m2-commands-4-2">This block defines a quotient ring and a free module over it. It also explores indexing of basis vectors and ring metadata using `describe`.</div>
+<div id="sec-m2-commands-4-3" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">R = ZZ/5[x,y,z];
+(x + y)^5
+R
+describe R
+F = R^3
+F_1
+F_{1,2}
+F_{2,1,1}
+</script></div>
+<div class="para" id="sec-m2-commands-4-4">We define a homomorphism using a matrix and investigate its image, ideal, kernel, and related algebraic information like rank and Poincaré polynomial.</div>
+<div id="sec-m2-commands-4-5" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">f = matrix {{x, y, z}}
+image f
+ideal (x, y, z)
+kernel f
+generators oo
+poincare kernel f
+rank kernel f
+presentation kernel f
+</script></div>
+<div class="para" id="sec-m2-commands-4-6">This segment combines kernel and cokernel into a subquotient module, and explores its generators, relations, and a simplified (pruned) form.</div>
+<div id="sec-m2-commands-4-7" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">cokernel f
+N = kernel f ++ cokernel f
+generators N
+relations N
+prune N
+</script></div></section><section class="section" id="sec-m2-commands-5"><h4 class="heading hide-type">
+<span class="type">Section</span><span class="space"> </span><span class="codenumber">11.3.4</span><span class="space"> </span><span class="title">Homological Algebra and Gröbner Bases</span>
+</h4>
+<div class="para" id="sec-m2-commands-5-2">We compute a projective resolution of a module, verify that it is a complex, and examine its Betti table for structure.</div>
+<div id="sec-m2-commands-5-3" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">C = resolution cokernel f
+C.dd
+C.dd^2 == 0
+betti C
+</script></div>
+<div class="para" id="sec-m2-commands-5-4">We construct a generic matrix, compute its resolution, and build polynomial rings with indexed variables. We generate and analyze a Gröbner basis.</div>
+<div id="sec-m2-commands-5-5" class="ptx-sagecell sagecell-macaulay2"><script type="text/x-sage">R = ZZ/101[a .. r];
+g = genericMatrix(R, a, 3, 6)
+M = cokernel g
+time C = resolution M
+betti C
+S = ZZ/101[t_1 .. t_9, u_1 .. u_9];
+m = genericMatrix(S, t_1, 3, 3)
+n = genericMatrix(S, u_1, 3, 3)
+m * n
+j = ideal(m*n - n*m)
+gbj = groebnerBasis j;
+betti gbj
+</script></div></section></section><section class="section" id="sec-invariantrings-package"><h3 class="heading hide-type">
 <span class="type">Section</span><span class="space"> </span><span class="codenumber">11.4</span><span class="space"> </span><span class="title">InvariantRings package</span>
 </h3></section><section class="section" id="sec-theory-invariant-rings"><h3 class="heading hide-type">
 <span class="type">Section</span><span class="space"> </span><span class="codenumber">11.5</span><span class="space"> </span><span class="title">Theory for invariant rings</span>
