@@ -5,8 +5,8 @@ This repository is designed to help you quickly get started with [PreTeXt](https
 ---
 
 ## 🚀 Quick Start Guide
-
-Once the Codespace has finished creating, **check that PreTeXt is installed** by running:
+- Fork this repository and then create a codespace on your forked repository.
+- Once the Codespace has finished creating, **check that PreTeXt is installed** by running:
 
 ```
 pretext --version
